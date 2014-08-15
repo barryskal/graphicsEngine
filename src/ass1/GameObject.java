@@ -261,13 +261,41 @@ public class GameObject {
             return;
         }
 
-        // TODO: draw the object and all its children recursively
-        // setting the model transform appropriately 
-    
-        // Call drawSelf() to draw the object itself
+        gl.glPushMatrix();
+        gl.glTranslated(myTranslation[0], myTranslation[1], 0);
+        gl.glRotated(myRotation, 0, 0, 1);
+        gl.glScaled(myScale, myScale, myScale);
+        drawSelf(gl);
         
+        for (GameObject currentChild : myChildren)
+        	currentChild.draw(gl);
+        
+        gl.glPopMatrix();
     }
 
+    private double[][] getLocalTransformationMatrix()
+    {
+    	double[][] translate = MathUtil.translationMatrix(myTranslation);
+    	double[][] rotate = MathUtil.rotationMatrix(myRotation);
+    	double[][] scale = MathUtil.scaleMatrix(myScale);
+    	
+    	return MathUtil.multiply(MathUtil.multiply(translate, rotate), scale);
+    }
+    
+    public double[][] getGlobaltransformationMatrix()
+    {
+    	double[][] localTransformationMatrix = getLocalTransformationMatrix();
+    	
+    	// If this is the root node, we just need to return the local transformation matrix
+    	if (myParent == null)
+    		return localTransformationMatrix;
+    	
+    	// Otherwise, multiply teh transformation matrices together to get the new global one. 
+    	double[][] parentTransformationMatrix = myParent.getGlobaltransformationMatrix();
+    	
+        return MathUtil.multiply(parentTransformationMatrix, getLocalTransformationMatrix());
+    }
+    
     /**
      * Compute the object's position in world coordinates
      * 
@@ -277,6 +305,12 @@ public class GameObject {
      */
     public double[] getGlobalPosition() {
         double[] p = new double[2];
+        
+        double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
+        
+        for (int i = 0; i < 2; i++)
+        	p[i] = globalTransformationMatrix[i][2];
+        
         return p; 
     }
 
@@ -289,7 +323,35 @@ public class GameObject {
      * normalized to the range (-180, 180) degrees. 
      */
     public double getGlobalRotation() {
-        return 0;
+    	double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
+    	
+    	double i1 = globalTransformationMatrix[0][0];
+    	double i2 = globalTransformationMatrix[1][0];
+    	
+    	// Get the unit vector for i (i.e. eliminate scale)
+    	double sum = 0;
+    	for (int i = 0; i < 3; i++)
+    		sum += globalTransformationMatrix[i][0] * globalTransformationMatrix[i][0];
+    	
+    	double iMagnitude = Math.sqrt(sum);
+    	i1 /= iMagnitude;
+    	i2 /= iMagnitude;
+    	
+    	double angle = Math.toDegrees(Math.acos(i1));
+        
+    	
+    	
+    	if (i1 >= 0 && i2 >= 0) // in first quadrant
+    		return angle;
+    	else if (i1 < 0 && i2 >= 0) // in second quadrant
+    		return angle;
+    	else if (i1 >= 0 && i2 < 0) // fourth quadrant
+    		return angle * -1;
+    	else
+    		return angle * -1; // third quadrant
+    	
+    	
+    	
     }
 
     /**
@@ -300,7 +362,15 @@ public class GameObject {
      * @return the global scale of the object 
      */
     public double getGlobalScale() {
-        return 1.0;
+        
+    	double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
+    	double sum = 0;
+    	
+    	for (int i = 0; i < 3; i++)
+    		sum += globalTransformationMatrix[i][0] * globalTransformationMatrix[i][0];
+    	
+    	
+    	return Math.sqrt(sum);
     }
 
     /**
@@ -312,11 +382,30 @@ public class GameObject {
      * @param parent
      */
     public void setParent(GameObject parent) {
-        
+        // get global coordinate transformation
+    	// get inverse matrix for parent
+    	
+    	double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
         myParent.myChildren.remove(this);
         myParent = parent;
+        
+        double[][] inverseTransformationMatrix = myParent.getInverseTransformationMatrix();
+        
         myParent.myChildren.add(this);
         
+    }
+    
+    public double[][] getInverseTransformationMatrix()
+    {
+    	double[][] inverseScale = MathUtil.scaleMatrix(1 / getGlobalScale());
+    	double[][] inverseRotation = MathUtil.rotationMatrix(getGlobalRotation() * -1);
+    	double[] globalTranslation = getGlobalPosition();
+    	globalTranslation[0] *= -1;
+    	globalTranslation[1] *= -1;
+    	
+    	double[][] inversetranslation = MathUtil.translationMatrix(globalTranslation);
+    	
+    	return MathUtil.multiply(MathUtil.multiply(inverseScale, inverseRotation), inversetranslation);
     }
     
 

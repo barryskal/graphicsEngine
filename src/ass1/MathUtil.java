@@ -90,8 +90,11 @@ public class MathUtil {
      * @return
      */
     public static double[][] translationMatrix(double[] v) {
-
-        return null;
+    	double[][] matrix = getIdentityMatrix();
+    	for (int i = 0; i < 2; i++)
+    		matrix[i][2] = v[i];
+    	
+        return matrix;
     }
 
     /**
@@ -102,8 +105,16 @@ public class MathUtil {
      */
     public static double[][] rotationMatrix(double angle) {
 
-
-        return null;
+    	double[][] matrix = getIdentityMatrix();
+    	double angleInRadians = Math.toRadians(angle);
+    	
+    	matrix[0][0] = Math.cos(angleInRadians);
+    	matrix[1][1] = matrix[0][0];
+    	
+    	matrix[0][1] = Math.sin(angleInRadians) * -1;
+    	matrix[1][0] = matrix[0][1] * -1;
+    	
+        return matrix;
     }
 
     /**
@@ -113,9 +124,33 @@ public class MathUtil {
      * @return
      */
     public static double[][] scaleMatrix(double scale) {
-
-        return null;
+    	double[][] matrix = getIdentityMatrix();
+    	
+    	for (int i = 0; i < 2; i++)
+    		matrix[i][i] *= scale;
+        
+    	return matrix;
     }
 
+    /**
+     * returns an 3x3 identity matrix which can be manipulated by any of 
+     * transformation methods 
+     * @return
+     */
+    private static double[][] getIdentityMatrix()
+    {
+    	double[][] matrix = new double[3][3];
+    	for (int i = 0; i < 3; i++)
+    		matrix[i][i] = 1;
+    	
+    	return matrix;
+    	
+    }
+    
+    public static void printMatrix(double[][] matrixToPrint)
+    {
+    	for (int row = 0; row < 3; row++)
+    		System.out.format("| %.3f %.3f %.3f |%n", matrixToPrint[row][0],matrixToPrint[row][1],matrixToPrint[row][2]);
+    }
     
 }

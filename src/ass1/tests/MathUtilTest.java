@@ -135,6 +135,30 @@ public class MathUtilTest extends TestCase {
     }
     
     @Test
+    public void testRotation3() {
+        double theta = 60;
+        double[][] m = MathUtil.rotationMatrix(theta);
+        
+        // Should be:
+        // [[0.5,-0.866,0]
+        //  [0.866,0.5,0]
+        //  [0,0,1]]
+    
+        assertEquals(0.5, m[0][0], EPSILON);
+        assertEquals(-0.866, m[0][1], EPSILON);
+        assertEquals(0.0, m[0][2], EPSILON);
+
+        assertEquals(0.866, m[1][0], EPSILON);
+        assertEquals(0.5, m[1][1], EPSILON);
+        assertEquals(0.0, m[1][2], EPSILON);
+
+        assertEquals(0.0, m[2][0], EPSILON);
+        assertEquals(0.0, m[2][1], EPSILON);
+        assertEquals(1.0, m[2][2], EPSILON);    
+        
+    }
+    
+    @Test
     public void testScale0() {
         double scale = 1;
         double[][] m = MathUtil.scaleMatrix(scale);

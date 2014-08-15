@@ -3,7 +3,7 @@ package ass1.tests;
 import org.junit.Test;
 
 import ass1.GameObject;
-
+import ass1.MathUtil;
 import junit.framework.TestCase;
 
 /**
@@ -136,6 +136,82 @@ public class GameObjectTest extends TestCase {
         assertEquals(90, r, EPSILON);
         assertEquals(2, s, EPSILON);
 
+    }
+    
+    @Test
+    public void testGlobal3() {
+        GameObject obj = new GameObject(GameObject.ROOT);
+        
+        obj.translate(-2, 3);
+        obj.rotate(120);
+        obj.scale(2);
+        
+        double[] p = obj.getGlobalPosition();
+        double r = obj.getGlobalRotation();
+        double s = obj.getGlobalScale();
+
+        
+        
+        assertEquals(-2, p[0], EPSILON);
+        assertEquals(3, p[1], EPSILON);
+        assertEquals(120, r, EPSILON);
+        assertEquals(2, s, EPSILON);
+    }
+    
+    @Test
+    public void testGlobal4() {
+        GameObject obj = new GameObject(GameObject.ROOT);
+        
+        obj.translate(-2, 3);
+        obj.rotate(-45);
+        obj.scale(2);
+        
+        double[] p = obj.getGlobalPosition();
+        double r = obj.getGlobalRotation();
+        double s = obj.getGlobalScale();
+        assertEquals(-2, p[0], EPSILON);
+        assertEquals(3, p[1], EPSILON);
+        assertEquals(-45, r, EPSILON);
+        assertEquals(2, s, EPSILON);
+    }
+    
+    @Test
+    public void testGlobal5() {
+        GameObject obj = new GameObject(GameObject.ROOT);
+        
+        obj.rotate(-145);
+        
+        double[] p = obj.getGlobalPosition();
+        double r = obj.getGlobalRotation();
+        double s = obj.getGlobalScale();
+        
+        MathUtil.printMatrix(obj.getGlobaltransformationMatrix());
+        
+        
+        
+        assertEquals(0, p[0], EPSILON);
+        assertEquals(0, p[1], EPSILON);
+        assertEquals(-145, r, EPSILON);
+        assertEquals(1, s, EPSILON);
+    }
+    
+    @Test
+    public void testGlobal6() {
+        GameObject obj = new GameObject(GameObject.ROOT);
+        
+        obj.scale(-2);
+        
+        double[] p = obj.getGlobalPosition();
+        double r = obj.getGlobalRotation();
+        double s = obj.getGlobalScale();
+        
+        
+        
+        
+        assertEquals(0, p[0], EPSILON);
+        assertEquals(0, p[1], EPSILON);
+        assertEquals(0, r, EPSILON);
+        assertEquals(-2, s, EPSILON);
     }
 
     @Test
