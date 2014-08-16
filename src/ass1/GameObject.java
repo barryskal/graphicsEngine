@@ -303,16 +303,22 @@ public class GameObject {
      * 
      * @return a point in world coordinats in [x,y] form
      */
-    public double[] getGlobalPosition() {
-        double[] p = new double[2];
+    public double[] getGlobalPosition() 
+    {
+    	
+        return getPositionFromTransformationMatrix(getGlobaltransformationMatrix());
         
-        double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
-        
-        for (int i = 0; i < 2; i++)
-        	p[i] = globalTransformationMatrix[i][2];
-        
-        return p; 
     }
+
+	private double[] getPositionFromTransformationMatrix(double[][] transformationMatrix) 
+	{
+		double[] p = new double[2];
+              
+        for (int i = 0; i < 2; i++)
+        	p[i] = transformationMatrix[i][2];
+        
+        return p;
+	}
 
     /**
      * Compute the object's rotation in the global coordinate frame
@@ -322,16 +328,22 @@ public class GameObject {
      * @return the global rotation of the object (in degrees) and 
      * normalized to the range (-180, 180) degrees. 
      */
-    public double getGlobalRotation() {
-    	double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
+    public double getGlobalRotation() 
+    {
     	
-    	double i1 = globalTransformationMatrix[0][0];
-    	double i2 = globalTransformationMatrix[1][0];
+    	return getRotationFromTransformationMatrix(getGlobaltransformationMatrix());
+    	  
+    }
+
+	private double getRotationFromTransformationMatrix(double[][] transformationMatrix) 
+	{
+		double i1 = transformationMatrix[0][0];
+    	double i2 = transformationMatrix[1][0];
     	
     	// Get the unit vector for i (i.e. eliminate scale)
     	double sum = 0;
     	for (int i = 0; i < 3; i++)
-    		sum += globalTransformationMatrix[i][0] * globalTransformationMatrix[i][0];
+    		sum += transformationMatrix[i][0] * transformationMatrix[i][0];
     	
     	double iMagnitude = Math.sqrt(sum);
     	i1 /= iMagnitude;
@@ -349,10 +361,7 @@ public class GameObject {
     		return angle * -1;
     	else
     		return angle * -1; // third quadrant
-    	
-    	
-    	
-    }
+	}
 
     /**
      * Compute the object's scale in global terms
@@ -361,17 +370,22 @@ public class GameObject {
      * 
      * @return the global scale of the object 
      */
-    public double getGlobalScale() {
+    public double getGlobalScale() 
+    {
         
-    	double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
-    	double sum = 0;
+    	return getScaleFromTransformationMatrix(getGlobaltransformationMatrix());
+    }
+
+	private double getScaleFromTransformationMatrix(double[][] transformationMatrix) 
+	{
+		double sum = 0;
     	
     	for (int i = 0; i < 3; i++)
-    		sum += globalTransformationMatrix[i][0] * globalTransformationMatrix[i][0];
+    		sum += transformationMatrix[i][0] * transformationMatrix[i][0];
     	
     	
     	return Math.sqrt(sum);
-    }
+	}
 
     /**
      * Change the parent of a game object.
@@ -390,6 +404,14 @@ public class GameObject {
         myParent = parent;
         
         double[][] inverseTransformationMatrix = myParent.getInverseTransformationMatrix();
+        double[][] newLocalTransformationMatrix = MathUtil.multiply(inverseTransformationMatrix, globalTransformationMatrix);
+        
+        double[] newPosition = getPositionFromTransformationMatrix(newLocalTransformationMatrix);
+        setPosition(newPosition[0], newPosition[1]);
+        
+        setRotation(getRotationFromTransformationMatrix(newLocalTransformationMatrix));
+        
+        setScale(getScaleFromTransformationMatrix(newLocalTransformationMatrix));
         
         myParent.myChildren.add(this);
         
