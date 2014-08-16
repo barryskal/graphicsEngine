@@ -2,8 +2,6 @@ package ass1;
 
 import javax.media.opengl.GL2;
 
-import ass1.ass1.spec;
-
 /**
  * A game object that has a polygonal shape.
  * 
@@ -116,10 +114,52 @@ public class PolygonalGameObject extends GameObject {
      */
     @Override
     public void drawSelf(GL2 gl) {
-
-        // TODO: Write this method
-
+    	// If both fill and line colour are null, there's no need to draw anything
+    	if (myFillColour == null && myLineColour == null) 
+    		return;
+    	
+    	// draw the filled polygon first
+    	if (myFillColour != null)
+    	{
+    		gl.glColor4d(myFillColour[0], myFillColour[1], myFillColour[2], myFillColour[3]);
+    		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+    		drawPolygon(gl);
+    	}
+    	
+    	// draw the outline of the polygon
+    	if (myLineColour != null)
+    	{
+    		gl.glColor4d(myLineColour[0], myLineColour[1], myLineColour[2], myLineColour[3]);
+    		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+    		
+    		/* If the fill has already been drawn, we need to offset the line so that
+    		 * it is rastersized properly
+    		 */
+    		if (myFillColour != null)
+    		{
+    			gl.glEnable(GL2.GL_POLYGON_OFFSET_LINE);
+    			gl.glPolygonOffset(-2.0f, -2.0f);
+    		}
+    		
+    		drawPolygon(gl);
+    		// Change the polygon mode back to avoid issues
+    		gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+    	}
+    	
     }
+    
+    private void drawPolygon(GL2 gl)
+    {
+    	gl.glBegin(GL2.GL_POLYGON);
+		{
+			for (int i = 0; i < myPoints.length; i += 2)
+			{
+				gl.glVertex2d(myPoints[i], myPoints[i + 1]);
+			}	
+		}
+		gl.glEnd();
+    }
+    		
 
 
 }
