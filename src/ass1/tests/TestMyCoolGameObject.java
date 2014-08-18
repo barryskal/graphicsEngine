@@ -24,11 +24,11 @@ public class TestMyCoolGameObject {
 		// Should not break if we apply transformations for example
 		// If we uncommented these lines (or wrote other transformations) 
 		// it should not break your object
-		/**
+		
 		cgo.translate(-0.2,0.2);
 		cgo.rotate(45);
 		cgo.scale(0.25);
-		**/    
+		
 	}
    
     /**
@@ -54,9 +54,9 @@ public class TestMyCoolGameObject {
         panel.addGLEventListener(engine);
 
         // Add an animator to call 'display' at 60fps        
-        FPSAnimator animator = new FPSAnimator(60);
-        animator.add(panel);
-        animator.start();
+        //FPSAnimator animator = new FPSAnimator(60);
+        //animator.add(panel);
+        //animator.start();
 
         // Put it in a window
         JFrame jFrame = new JFrame("Test Shapes");

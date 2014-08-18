@@ -84,8 +84,9 @@ public class LineGameObject extends GameObject
     	gl.glBegin(GL2.GL_LINES);
     	{
     		gl.glVertex2d(myPoints[0], myPoints[1]);
-    		gl.glVertex2d(myPoints[1], myPoints[2]);
+    		gl.glVertex2d(myPoints[2], myPoints[3]);
     	}
+    	gl.glEnd();
     	
     }
 }

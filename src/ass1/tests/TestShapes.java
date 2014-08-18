@@ -23,7 +23,6 @@ public class TestShapes {
         double points[] = {0,0,1,1,0,1};
         PolygonalGameObject p = new PolygonalGameObject(GameObject.ROOT,points,null,white);
         p.rotate(45);
-        
         // Create a circle 
         double cFillCol[] = {1,0.5,0.5,1};
         CircularGameObject c = new CircularGameObject(GameObject.ROOT,cFillCol,white);
@@ -44,7 +43,6 @@ public class TestShapes {
         //Create a circle that is a child of line l2       
         CircularGameObject c2 = new CircularGameObject(p,0.25,white,white);     
         c2.translate(-1,0);
-       
       
 	}
    
@@ -74,9 +72,9 @@ public class TestShapes {
         panel.addGLEventListener(engine);
 
         // Add an animator to call 'display' at 60fps        
-        FPSAnimator animator = new FPSAnimator(60);
-        animator.add(panel);
-        animator.start();
+        //FPSAnimator animator = new FPSAnimator(60);
+        //animator.add(panel);
+        //animator.start();
 
         // Put it in a window
         JFrame jFrame = new JFrame("Test Shapes");

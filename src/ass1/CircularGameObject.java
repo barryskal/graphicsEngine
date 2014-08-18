@@ -20,6 +20,15 @@ public class CircularGameObject extends PolygonalGameObject
 		myRadius = radius;
 		setPoints(getPointsFromRadius());
 	}
+	public void setRadius(double radius)
+	{
+		myRadius = radius;
+	}
+	
+	public double getRadius()
+	{
+		return myRadius;
+	}
 	
 	private double[] getPointsFromRadius()
 	{
