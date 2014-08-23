@@ -185,7 +185,7 @@ public class GameObjectTest extends TestCase {
         double r = obj.getGlobalRotation();
         double s = obj.getGlobalScale();
         
-        MathUtil.printMatrix(obj.getGlobaltransformationMatrix());
+        
         
         
         
@@ -318,6 +318,7 @@ public class GameObjectTest extends TestCase {
         r = obj2.getRotation();
         s = obj2.getScale();
         
+        
         assertEquals(-1, gp[0], EPSILON);
         assertEquals(-1, gp[1], EPSILON);
         assertEquals(-45, gr, EPSILON);
@@ -338,6 +339,8 @@ public class GameObjectTest extends TestCase {
         r = obj3.getRotation();
         s = obj3.getScale();
         
+        //MathUtil.printMatrix(obj3.getGlobaltransformationMatrix());
+
         assertEquals(1, gp[0], EPSILON);
         assertEquals(1, gp[1], EPSILON);
         assertEquals(150, gr, EPSILON);
@@ -351,16 +354,6 @@ public class GameObjectTest extends TestCase {
         //Change obj3
         obj3.setParent(obj2);
         
-        // obj3's global coordinate frame should not be changed
-        gp = obj3.getGlobalPosition();
-        gr = obj3.getGlobalRotation();
-        gs = obj3.getGlobalScale();
-        
-        assertEquals(1, gp[0], EPSILON);
-        assertEquals(1, gp[1], EPSILON);
-        assertEquals(150, gr, EPSILON);
-        assertEquals(4, gs, EPSILON);        
-
         // obj2's local coordinate frame is adjusted to suit
         
         p = obj3.getPosition();
@@ -370,8 +363,19 @@ public class GameObjectTest extends TestCase {
         assertEquals(0, p[0], EPSILON);
         assertEquals(1.41421, p[1], EPSILON);
         //195 normalized is -165
+        assertEquals(2, s, EPSILON);
         assertEquals(-165, r, EPSILON);
-        assertEquals(2, s, EPSILON);        
+        
+        // obj3's global coordinate frame should not be changed
+        gp = obj3.getGlobalPosition();
+        gr = obj3.getGlobalRotation();
+        gs = obj3.getGlobalScale();
+        
+        assertEquals(1, gp[0], EPSILON);
+        assertEquals(1, gp[1], EPSILON);
+        assertEquals(4, gs, EPSILON);        
+        assertEquals(150, gr, EPSILON);
+
 
         // obj1's local coordinate frame is not affected
         

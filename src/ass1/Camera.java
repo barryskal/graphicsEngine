@@ -47,12 +47,11 @@ public class Camera extends GameObject {
     	gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         
-        double[] cameraPosition = getPosition();
-        double inverseScaleFactor = 1.0 / getScale();
+        double[] cameraPosition = getGlobalPosition();
+        double inverseScaleFactor = 1.0 / getGlobalScale();
         gl.glScaled(inverseScaleFactor, inverseScaleFactor, inverseScaleFactor);
-        gl.glRotated(getRotation() * -1, 0, 0, 1);
+        gl.glRotated(getGlobalRotation() * -1, 0, 0, 1);
         gl.glTranslated(cameraPosition[0] * -1, cameraPosition[1] * -1, 0);
-        
         
     }
 
