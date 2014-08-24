@@ -153,4 +153,10 @@ public class MathUtil {
     		System.out.format("| %.3f %.3f %.3f |%n", matrixToPrint[row][0],matrixToPrint[row][1],matrixToPrint[row][2]);
     }
     
+    public static void printVector(double[] vector)
+    {
+    	for (int row = 0; row < 3; row++)
+    		System.out.format("| %.3f |%n", vector[row]);
+    }
+    
 }

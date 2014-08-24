@@ -92,6 +92,26 @@ public class GameEngine implements GLEventListener {
             g.update(dt);
         }        
     }
+    
+    
+    /**
+     * Performs collision testing on all the objects contained in the ALL_OBJECTS list
+     * of GameObject. 
+     * @param p The point that is being tested
+     * @return A list of the GameObjects that enclose the given point
+     */
+    public List<GameObject> collision(double[] p)
+    {
+    	ArrayList<GameObject> collisionList = new ArrayList<GameObject>();
+    	
+    	for (GameObject game : GameObject.ALL_OBJECTS)
+    	{
+    		if (game.collision(p))
+    			collisionList.add(game);
+    	}
+    	
+    	return collisionList;
+    }
 
    
     

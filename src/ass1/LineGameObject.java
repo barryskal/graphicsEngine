@@ -1,9 +1,12 @@
 package ass1;
 
+import java.util.Arrays;
+
 import javax.media.opengl.GL2;
 
 public class LineGameObject extends GameObject 
 {
+	private static final double EPSILON = 0.001;
 	private double[] myLineColour;
 	private double[] myPoints;
 	
@@ -87,6 +90,51 @@ public class LineGameObject extends GameObject
     		gl.glVertex2d(myPoints[2], myPoints[3]);
     	}
     	gl.glEnd();
+    	
+    }
+    
+    @Override
+    public boolean collision(double[] point)
+    {
+    	/*
+    	 * Tests whether there is a collision by determining whether there exists
+    	 * some value, t, that allows for linear interpolation of this line to 
+    	 * generate the given point.
+    	 * 
+    	 * lerp(P,Q,t) 	= P + t(Q - P)
+    	 * 		point	= P + t(Q - P)
+    	 * 		tx		= (pointx - Px) / (Qx - Px)
+    	 * 		ty		= (pointy - Py) / (Qy - Py)
+    	 * 	if tx == ty then collision
+    	 */		
+    	
+    	/*
+    	 * Note that we need to convert the points P and Q in to world coordinates
+    	 */
+    	
+    	double localP[] = {myPoints[0], myPoints[1], 1};
+    	double localQ[] = {myPoints[2], myPoints[3], 1};
+    	
+    	double[][] globalTransformationMatrix = getGlobaltransformationMatrix();
+    	
+    	double[] globalP = MathUtil.multiply(globalTransformationMatrix, localP);
+    	double[] globalQ = MathUtil.multiply(globalTransformationMatrix, localQ);
+    	
+    	double tx = (point[0] - globalP[0]) / (globalQ[0] - globalP[0]);
+    	double ty = (point[1] - globalP[1]) / (globalQ[1] - globalP[1]);
+    	
+    	/* 
+    	 * In some cases rounding error can cause a collision to not be
+    	 * detected correctly. This formula only works when neither
+    	 * tx or ty is zero, as that can cause a false positive 
+    	 */
+    	if (tx != 0 && ty != 0)
+    		return ((tx - ty) / Math.max(Math.abs(tx), Math.abs(ty))) < EPSILON;
+    	
+    	if (tx == ty)
+    		return true;
+    	
+    	return false;
     	
     }
 }

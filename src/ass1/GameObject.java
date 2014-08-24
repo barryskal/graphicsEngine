@@ -405,7 +405,6 @@ public class GameObject {
         double[][] inverseTransformationMatrix = myParent.getInverseTransformationMatrix();
         //MathUtil.printMatrix(inverseTransformationMatrix);
         double[][] newLocalTransformationMatrix = MathUtil.multiply(inverseTransformationMatrix, globalTransformationMatrix);
-        MathUtil.printMatrix(newLocalTransformationMatrix);
         double[] newPosition = getPositionFromTransformationMatrix(newLocalTransformationMatrix);
         setPosition(newPosition[0], newPosition[1]);
         
@@ -418,6 +417,11 @@ public class GameObject {
         
     }
     
+    /**
+     * Generates the inverse global transformation matrix for this object
+     * @return a 3 x 3 matrix representing the inverse transformation
+     * matrix
+     */
     public double[][] getInverseTransformationMatrix()
     {
     	double[][] inverseScale = MathUtil.scaleMatrix(1 / getGlobalScale());
@@ -435,6 +439,18 @@ public class GameObject {
     	//MathUtil.printMatrix(inversetranslation);
     	
     	return MathUtil.multiply(MathUtil.multiply(inverseScale, inverseRotation), inversetranslation);
+    }
+    
+    /**
+     * This tests whether the given point is colliding with the GameObject. 
+     * By default this method returns false, but it should be overridden in 
+     * each of the individual shape classes.
+     * @param point The point used for collision testing
+     * @return true is the given point collides with this object, false otherwise.
+     */
+    public boolean collision(double[] point)
+    {
+    	return false;
     }
     
 

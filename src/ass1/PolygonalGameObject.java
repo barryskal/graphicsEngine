@@ -1,5 +1,9 @@
 package ass1;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.media.opengl.GL2;
 
 /**
@@ -160,6 +164,54 @@ public class PolygonalGameObject extends GameObject {
 		gl.glEnd();
     }
     		
+    
+    private List<PolygonEdge> getEdgeList()
+    {
+    	ArrayList<PolygonEdge> edgeList = new ArrayList<PolygonEdge>();
+    	
+    	for (int i = 0; i < myPoints.length; i += 2)
+    	{
+    		double[] upperVertex = Arrays.copyOfRange(myPoints, i, i + 2);
+    		double[] lowerVertex = Arrays.copyOfRange(myPoints, (i + 2), (i + 4));
+    		PolygonEdge newEdge = new PolygonEdge(upperVertex, lowerVertex);
+    		edgeList.add(newEdge);
+    	}
+    	
+    	return edgeList;
+    }
+    
+    public void printEdgeList()
+    {
+    	for (PolygonEdge edge : getEdgeList())
+    	{
+    		edge.printVertices();
+    	}
+    }
+    
+    private class PolygonEdge
+    {
+    	private double[] upperVertex;
+    	private double[] lowerVertex;
+    	
+    	public PolygonEdge(double[] newUpperVertex, double[] newLowerVertex)
+    	{
+    		upperVertex = newUpperVertex;
+    		lowerVertex = newLowerVertex;
+    	}
+    	
+    	public void printVertices()
+    	{
+    		System.out.printf("Upper Vertex: (%.3f, %.3f) lower vertex: (%.3f, %.3f) %n", upperVertex[0], upperVertex[1], lowerVertex[0], lowerVertex[1]);
+    	}
+    }
+    
+    @Override
+    public boolean collision(double[] point)
+    {
+    	
+    	
+    	return false;
+    }
 
 
 }
