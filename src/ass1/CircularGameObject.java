@@ -46,4 +46,29 @@ public class CircularGameObject extends PolygonalGameObject
 		
 		return points;
 	}
+	
+	@Override
+	public boolean collision(double[] point)
+	{
+		/*
+		 * This is a lot simpler than the polygon collision testing.
+		 * First the given point is converted in to the local coordinate system 
+		 * then the distance is calculated between the point and the
+		 * center of the circle. If that distance is <= radius
+		 * then that is a collision		 * 
+		 */
+		
+		double[] localPoint = convertPointToLocalCoordinates(point);
+		/*
+		 * Note that the centre point is always 0, 0 for a circle.
+		 * So calculating the distance between the two points 
+		 * is as aimple as just taking the given collision point
+		 * coordinates
+		 */
+		
+		double distance = Math.sqrt((localPoint[0] * localPoint[0]) + (localPoint[1] * localPoint[1]));
+		
+		return distance <= myRadius;
+		
+	}
 }

@@ -208,10 +208,78 @@ public class PolygonalGameObject extends GameObject {
     @Override
     public boolean collision(double[] point)
     {
+    	/*
+    	 * How the collision detection is done:
+    	 * - Convert the given point in to the local coordinate system
+    	 * - Construct a vector from the given point to infinity along the x axis
+    	 * - Go through the edge list and see if the infinite vector intersects with 
+    	 * any of these
+    	 * - Count the intersections
+    	 * - If that number is odd. Then this is a collision
+    	 * 
+    	 * Note that the edge vector is constructed as upperVertex - lowerVertex
+    	 * so the vector looks something like
+    	 * L(t) = lowerVertex + ((upperX - lowerX), (upperY - lowerY))t
+    	 * As per the notes on collision detection you only accept an intersection 
+    	 * at the end of the line if the intersection occurs on a pre-defined vertex.
+    	 * For us, let's select the lowerVertex; therefore, valid intersections
+    	 * only occur between 0 <= t < 1.
+    	 * 
+    	 * Point in local coordinates = px, py
+    	 * collision vector = cv
+    	 * cvX = px + (inf)u
+    	 * cvY = py + 0u
+    	 * 
+    	 * Edge vector = ev
+    	 * evX = lvX + (uvX - lvY)t
+    	 * evY = lvY + (uvY - lvY)t
+    	 * 
+    	 * Use simultaneous equations on the Y component
+    	 * py = lvY + (uvY - lvY)t
+    	 * t = (py - lvY) / (uvY - lvY)
+    	 * 
+    	 * if t < 0 or t >= 1 then no collision
+    	 * 
+    	 * Use simulataneous equations on the x component
+    	 * px + (inf)u = lvX + (uvX - lvX)t
+    	 * (inf)u = lvX - px + (uvX - lvX)t
+    	 * 
+    	 * We don't need to solve for u, we just need to check whether the
+    	 * right hand side of the equation is >= 0, i.e. the edge is not behind
+    	 * the collision point. 
+    	 * 
+    	 *  
+    	 */
+    	
+    	double[] localPoint = convertPointToLocalCoordinates(point);
+    	int numCollisions = 0;
     	
     	
-    	return false;
+    	for (PolygonEdge edge : getEdgeList())
+    	{
+    		//System.out.println("Point: " + localPoint[0] + ", " + localPoint[1]);
+    		//edge.printVertices();
+    		double t = (localPoint[1] - edge.lowerVertex[1]) / (edge.upperVertex[1] - edge.lowerVertex[1]);
+    		//System.out.println("t: " + t);
+    		if (t < 0 || t >= 1)
+    			continue;
+    		
+    		double u = edge.lowerVertex[0] - localPoint[0] + ((edge.upperVertex[0] - edge.lowerVertex[0]) * t);
+    		//System.out.println("u: "+ u);
+    		
+    		if (u >= 0)
+    			numCollisions++;
+    	}
+    	
+    	//System.out.println("num collisions: " + numCollisions);
+    	return isNumberOfCollisionsOdd(numCollisions);
     }
-
+    
+    private boolean isNumberOfCollisionsOdd(int numCollisions)
+    {
+    	return (numCollisions % 2) != 0;
+    }
+    
+    
 
 }

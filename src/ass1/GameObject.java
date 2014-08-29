@@ -453,5 +453,18 @@ public class GameObject {
     	return false;
     }
     
+    
+    /**
+     * Converts a given point in global coordinates to the local coordinate system
+     * @param globalPoints The point in global coordinates
+     * @return The same point, but specified in the local coordiante system
+     */
+    public double[] convertPointToLocalCoordinates(double[] globalPoints)
+    {
+    	double point[] = {globalPoints[0], globalPoints[1], 1};
+    	
+    	return MathUtil.multiply(getInverseTransformationMatrix(), point);
+    }
+    
 
 }
