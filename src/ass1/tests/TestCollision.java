@@ -110,6 +110,23 @@ public class TestCollision extends TestCase
 	}
 	
 	@Test
+	public void testPolygonCollision5()
+	{
+		/*
+		 * Test that a point on the edge of a polygon results in a collision
+		 */
+		double white[] = {1,1,1,1};
+		double points[] = {0,0,0,1,1,1,1,0};
+		GameObject obj = new PolygonalGameObject(GameObject.ROOT, points, null, white);
+		
+		
+		
+		double collisionPoint[] = {0.5, 1};
+		
+		assertTrue(obj.collision(collisionPoint));
+	}
+	
+	@Test
 	public void testCircleCollision1()
 	{
 		GameObject obj = new CircularGameObject(GameObject.ROOT, 1, null, null);

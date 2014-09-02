@@ -260,9 +260,11 @@ public class PolygonalGameObject extends GameObject {
     		//System.out.println("Point: " + localPoint[0] + ", " + localPoint[1]);
     		//edge.printVertices();
     		double t = (localPoint[1] - edge.lowerVertex[1]) / (edge.upperVertex[1] - edge.lowerVertex[1]);
-    		//System.out.println("t: " + t);
     		if (t < 0 || t >= 1)
     			continue;
+    		else if (localPoint[1] == edge.lowerVertex[1])
+    			t = 0;
+    		//System.out.println("t: " + t);
     		
     		double u = edge.lowerVertex[0] - localPoint[0] + ((edge.upperVertex[0] - edge.lowerVertex[0]) * t);
     		//System.out.println("u: "+ u);
