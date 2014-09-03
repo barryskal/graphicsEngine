@@ -2,22 +2,46 @@ package ass1;
 
 public class MyCoolGameObject extends GameObject {
 
+	// The time it takes to complete a jump in ms
+	private static final double JUMP_TIME = 0.50;
+	
 	private PolygonalGameObject myBody;
 	private PolygonalGameObject myTurret;
 	private LineGameObject myCannon;
 	private CircularGameObject myWheel1;
 	private CircularGameObject myWheel2;
+	private double jumpHeight;
+	private double currentHeight;
+	private boolean jumping;
+	private boolean falling;
+	private double positionBeforeJump;
 	
 	public MyCoolGameObject()
 	{
 		super(GameObject.ROOT);
 		createTank();
+		jumpHeight = 0.5;
+		currentHeight = 0;
+		jumping = false;
+		falling = false;
 	}
 	
 	public MyCoolGameObject(GameObject parent) 
 	{
 		super(parent);
 		// TODO Auto-generated constructor stub
+	}
+	
+	
+	public void startJump()
+	{
+		jumping = true;
+		positionBeforeJump = getPosition()[1];
+	}
+	
+	public boolean isJumping()
+	{
+		return jumping;
 	}
 	
 	private void createTank()
@@ -42,11 +66,75 @@ public class MyCoolGameObject extends GameObject {
 		
 		myWheel2 = new CircularGameObject(myBody, radius, null, lineColour);
 		myWheel2.setPosition((0.5 - radius), (-0.125 - radius));
-		
-		
-		
-		
+	
 	}
+
+	public double getCurrentHeight() {
+		return currentHeight;
+	}
+
+	public void setCurrentHeight(double currentHeight) {
+		this.currentHeight = currentHeight;
+	}
+	
+	/**
+	 * What the override method does in this case
+	 * is update the vertical position of the tank
+	 * if it is in the middle of a jump. Otherwise
+	 * it does noting 
+	 */
+	@Override
+	public void update(double dt) 
+	{
+		System.out.println("time: " + dt);
+        if (!jumping)
+        	return;
+        
+        /* 
+         * The percentage of distance moved will be equal to 
+         * p = dt / JUMP_TIME
+         * 
+         * that is a distance of 
+         * d = p * (jumpHeight * 2)
+         * currentHeight += d
+         * 
+         * If the current height is greater than jumpHeight then 
+         * start the trip down, or if it is < 0, set the currentHeight to
+         * 0
+         * 
+         */
+        
+        double p = dt / JUMP_TIME;
+        double d = p * (jumpHeight * 2);
+        
+        if (!falling)
+        {
+        	currentHeight += d;
+        
+	        if (currentHeight > jumpHeight)
+	        {
+	        	double distanceDown = currentHeight - jumpHeight;
+	        	currentHeight = jumpHeight - distanceDown;
+	        	falling = true;
+	        }
+        }
+        else
+        {
+        	currentHeight -= d;
+        	
+        	if (currentHeight <= 0)
+        	{
+        		currentHeight = 0;
+        		jumping = false;
+        		falling = false;
+        	}
+        }
+        
+        // Update y position of the object
+        double currentPos[] = getPosition();
+        setPosition(currentPos[0], positionBeforeJump + currentHeight);
+        
+    }
 	
 	
 
